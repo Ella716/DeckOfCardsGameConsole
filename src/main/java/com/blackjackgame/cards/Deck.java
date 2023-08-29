@@ -1,5 +1,7 @@
 package com.blackjackgame.cards;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -89,17 +91,13 @@ public class Deck {
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
-                Scanner sc = new Scanner(conn.getInputStream());
-                StringBuilder response = new StringBuilder();
-                while (sc.hasNextLine()) {
-                    response.append(sc.nextLine());
-                }
-                sc.close();
+                String response = new Scanner(conn.getInputStream()).nextLine();
 
-                String cardCode = response.toString().split("\"code\":\"")[0];
-                String suit = cardCode.substring(cardCode.length() - 1);
-                String value = cardCode.substring(0, cardCode.length() - 1);
-                return new Card(value, suit, cardCode);
+                // Parse the JSON response with Gson
+                Gson gson = new Gson();
+                Card card = gson.fromJson(response, Card.class);
+
+                return card;
             } else {
                 System.out.println("Failed to draw a card. Status code: " + conn.getResponseCode());
             }
@@ -109,6 +107,7 @@ public class Deck {
 
         return null;
     }
+
 
     public void shuffle() {
         try {

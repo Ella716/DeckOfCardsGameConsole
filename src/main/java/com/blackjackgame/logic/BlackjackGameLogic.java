@@ -54,31 +54,18 @@ public class BlackjackGameLogic {
         dealerTurn();
     }
 
-    private int calculateScore(List<Card> hand) {
+    public int calculateScore(List<Card> hand) {
         int score = 0;
         int numAces = 0;
 
         for (Card card : hand) {
-            if (card.getValue().matches("[0-9]+")) {
-                int cardValue = Integer.parseInt(card.getValue());
-                if (cardValue == 1) { // Ace
-                    numAces++;
-                    score += 11;
-                } else if (cardValue >= 11 && cardValue <= 13) { // Face card
-                    score += 10;
-                } else {
-                    score += cardValue;
-                }
+            if (card.isFaceCard()) {
+                score += 10;
+            } else if (card.getValue().matches("[0-9]+")) {
+                score += Integer.parseInt(card.getValue());
             } else {
-                int cardValue = card.getValue().charAt(0) - '0';
-                if (cardValue == 1) { // Ace
-                    numAces++;
-                    score += 11;
-                } else if (cardValue >= 11 && cardValue <= 13) { // Face card
-                    score += 10;
-                } else {
-                    score += cardValue;
-                }
+                score += 11;
+                numAces++;
             }
         }
 

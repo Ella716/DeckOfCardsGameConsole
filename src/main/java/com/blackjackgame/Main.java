@@ -13,6 +13,9 @@ public class Main {
         // Create a new Blackjack game logic
         BlackjackGameLogic gameLogic = new BlackjackGameLogic();
 
+        // Start the game
+        gameLogic.startGame();
+
         while (true) {
             System.out.println("\nPlayer Hand: " + gameLogic.getPlayerHand());
             System.out.println("Dealer Hand: " + gameLogic.getDealerHand());

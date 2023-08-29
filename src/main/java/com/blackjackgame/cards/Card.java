@@ -33,4 +33,7 @@ public class Card {
         this.faceUp = faceUp;
     }
 
+    public boolean isFaceCard() {
+        return value.matches("[JQK]");
+    }
 }
