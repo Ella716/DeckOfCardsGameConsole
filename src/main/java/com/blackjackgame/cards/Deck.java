@@ -1,12 +1,15 @@
 package com.blackjackgame.cards;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.List;
 
 public class Deck {
     private LinkedList<Card> cards;
@@ -25,23 +28,11 @@ public class Deck {
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
-                Scanner sc = new Scanner(conn.getInputStream());
-                StringBuilder response = new StringBuilder();
-                while (sc.hasNextLine()) {
-                    response.append(sc.nextLine());
-                }
-                sc.close();
-
-                String deckIdKey = "\"deck_id\":";
-                int deckIdIndex = response.indexOf(deckIdKey);
-                if (deckIdIndex != -1) {
-                    int deckIdStart = deckIdIndex + deckIdKey.length() + 2; // Skip colon and double quotes
-                    int deckIdEnd = response.indexOf("\"", deckIdStart);
-                    deckId = response.substring(deckIdStart, deckIdEnd);
-                    initializeDeck();
-                } else {
-                    System.out.println("Failed to create a new deck. Response: " + response);
-                }
+                Reader reader = new InputStreamReader(conn.getInputStream());
+                Gson gson = new Gson();
+                String json = reader.toString();
+                deckId = gson.fromJson(json, String.class);
+                initializeDeck();
             } else {
                 System.out.println("Failed to create a new deck. Status code: " + conn.getResponseCode());
             }
@@ -49,7 +40,6 @@ public class Deck {
             e.printStackTrace();
         }
     }
-
 
 
     private void initializeDeck() {
@@ -60,21 +50,10 @@ public class Deck {
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
-                Scanner sc = new Scanner(conn.getInputStream());
-                StringBuilder response = new StringBuilder();
-                while (sc.hasNextLine()) {
-                    response.append(sc.nextLine());
-                }
-                sc.close();
-
-                String[] cardsData = response.toString().split("\"code\":\"");
-                cards = new LinkedList<>();
-                for (int i = 1; i < cardsData.length; i++) {
-                    String cardCode = cardsData[i].split("\"")[0];
-                    String suit = cardCode.substring(cardCode.length() - 1);
-                    String value = cardCode.substring(0, cardCode.length() - 1);
-                    cards.add(new Card(value, suit, cardCode));
-                }
+                Reader reader = new InputStreamReader(conn.getInputStream());
+                Gson gson = new Gson();
+                List<Card> cardsData = gson.fromJson(reader, new TypeToken<List<Card>>() {}.getType());
+                cards = new LinkedList<>(cardsData);
             } else {
                 System.out.println("Failed to initialize the deck. Status code: " + conn.getResponseCode());
             }
@@ -84,43 +63,24 @@ public class Deck {
     }
 
     public Card drawCard() {
-        try {
-            URL url = new URL(API_URL + "/" + deckId + "/draw/?count=1");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            if (conn.getResponseCode() == 200) {
-                String response = new Scanner(conn.getInputStream()).nextLine();
-
-                // Parse the JSON response with Gson
-                Gson gson = new Gson();
-                Card card = gson.fromJson(response, Card.class);
-
-                return card;
-            } else {
-                System.out.println("Failed to draw a card. Status code: " + conn.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (cards.isEmpty()) {
+            initializeDeck();
         }
 
-        return null;
+        return cards.removeFirst();
     }
 
 
     public void shuffle() {
-        try {
-            URL url = new URL(API_URL + "/" + deckId + "/shuffle/");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
+        cards.clear();
+        initializeDeck();
+    }
 
-            if (conn.getResponseCode() != 200) {
-                System.out.println("Failed to shuffle the deck. Status code: " + conn.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String getDeckId() {
+        return deckId;
+    }
+
+    public boolean isEmpty() {
+        return cards.isEmpty();
     }
 }

@@ -12,6 +12,9 @@ public class Card {
         this.code = code;
     }
 
+    public Card(String suit, int rank) {
+    }
+
     public String getValue() {
         return value;
     }
@@ -35,5 +38,19 @@ public class Card {
 
     public boolean isFaceCard() {
         return value.matches("[JQK]");
+    }
+
+    public int getRank() {
+        if (value != null) {
+            if (value.equals("Ace")) {
+                return 1;
+            } else if (value.matches("[2-9]")) {
+                return Integer.parseInt(value);
+            } else {
+                return 10;
+            }
+        } else {
+            return 0;
+        }
     }
 }

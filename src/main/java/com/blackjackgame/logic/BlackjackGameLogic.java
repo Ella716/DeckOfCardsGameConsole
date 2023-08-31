@@ -87,21 +87,31 @@ public class BlackjackGameLogic {
     }
 
     public void startGame() {
+
         // Welcome message
         System.out.println("Welcome to Blackjack!");
 
         // Initialize the game state
         deck.shuffle(); // Shuffle the deck before starting the game
+
+        // Clear the player's and dealer's hands
         playerHand.clear();
         dealerHand.clear();
+
+        // Draw two cards for the player
         playerHand.add(deck.drawCard());
         playerHand.add(deck.drawCard());
+
+        // Draw two cards for the dealer
         dealerHand.add(deck.drawCard());
         dealerHand.add(deck.drawCard());
 
+        // Reveal the facedown card of the dealer
+        dealerHand.get(0).setFaceUp(true);
+
         // Show initial hands
         System.out.println("Your hand: " + playerHand);
-        System.out.println("Dealer's hand: [**," + dealerHand.get(1) + "]"); // Hide the dealer's facedown card
+        System.out.println("Dealer's hand: [**," + dealerHand.get(0) + "]"); // Hide the dealer's facedown card
 
         // Player's turn
         playerTurn();
