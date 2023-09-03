@@ -32,25 +32,19 @@ public class CustomHttpClient {
     }
 
     public static String customGet(String endpoint) {
-        HttpRequest request = null;
+        HttpRequest request;
         try {
             request = HttpRequest.newBuilder()
                     .uri(new URI(API_URL + endpoint))
                     .GET()
                     .build();
-            CompletableFuture<HttpResponse<String>> res = null;
+            CompletableFuture<HttpResponse<String>> res;
             CustomHttpClient customClient = getInstance();
             res = customClient.client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-            String resBody = null;
+            String resBody;
             resBody = res.thenApply(HttpResponse::body).get(5, TimeUnit.SECONDS);
             return resBody;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
+        } catch (URISyntaxException | ExecutionException | InterruptedException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
