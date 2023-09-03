@@ -17,11 +17,13 @@ public class Deck {
     }
 
      private void createNewDeck() {
+         System.out.println("Getting and shuffling new deck...");
          String resBody = CustomHttpClient.customGet("/new/shuffle/?deck_count=1");
          GsonBuilder builder = new GsonBuilder();
          Gson gson = builder.create();
          ShuffleResponse shuffleResponse = gson.fromJson(resBody, ShuffleResponse.class);
          deckId = shuffleResponse.getDeck_id();
+         System.out.println("Drawing cards...");
          initializeDeck();
      }
 
@@ -43,16 +45,16 @@ public class Deck {
     }
 
 
-    public void shuffle() {
-        cards.clear();
-        createNewDeck();
-    }
-
-    public String getDeckId() {
-        return deckId;
-    }
-
-    public boolean isEmpty() {
-        return cards.isEmpty();
-    }
+//    public void shuffle() {
+//        cards.clear();
+//        createNewDeck();
+//    }
+//
+//    public String getDeckId() {
+//        return deckId;
+//    }
+//
+//    public boolean isEmpty() {
+//        return cards.isEmpty();
+//    }
 }
