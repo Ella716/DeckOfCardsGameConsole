@@ -1,65 +1,54 @@
 package com.blackjackgame.cards;
 
+import com.blackjackgame.httpclient.CustomHttpClient;
+import com.blackjackgame.httpclient.responses.CardResponse;
+import com.blackjackgame.httpclient.responses.ShuffleResponse;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class Deck {
     private LinkedList<Card> cards;
     private String deckId;
-    private static final String API_URL = "https://deckofcardsapi.com/api/deck";
 
     public Deck() {
         createNewDeck();
     }
 
-    private void createNewDeck() {
-        try {
-            URL url = new URL(API_URL + "/new/shuffle/?deck_count=1");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            if (conn.getResponseCode() == 200) {
-                Reader reader = new InputStreamReader(conn.getInputStream());
-                Gson gson = new Gson();
-                String json = reader.toString();
-                deckId = gson.fromJson(json, String.class);
-                initializeDeck();
-            } else {
-                System.out.println("Failed to create a new deck. Status code: " + conn.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+     private void createNewDeck() {
+         String resBody = CustomHttpClient.customGet("/new/shuffle/?deck_count=1");
+         GsonBuilder builder = new GsonBuilder();
+         Gson gson = builder.create();
+         ShuffleResponse shuffleResponse = gson.fromJson(resBody, ShuffleResponse.class);
+         deckId = shuffleResponse.getDeck_id();
+         initializeDeck();
+     }
 
 
     private void initializeDeck() {
-        try {
-            URL url = new URL(API_URL + "/" + deckId + "/draw/?count=52");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            if (conn.getResponseCode() == 200) {
-                Reader reader = new InputStreamReader(conn.getInputStream());
-                Gson gson = new Gson();
-                List<Card> cardsData = gson.fromJson(reader, new TypeToken<List<Card>>() {}.getType());
-                cards = new LinkedList<>(cardsData);
-            } else {
-                System.out.println("Failed to initialize the deck. Status code: " + conn.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String resBody = CustomHttpClient.customGet("/" + deckId + "/draw/?count=52");
+//        System.out.println(resBody);
+        Gson gson = new Gson();
+        CardResponse cardsData = gson.fromJson(resBody,CardResponse.class);
+        cards = new LinkedList<>(cardsData.getCards());
     }
 
     public Card drawCard() {
@@ -73,7 +62,7 @@ public class Deck {
 
     public void shuffle() {
         cards.clear();
-        initializeDeck();
+        createNewDeck();
     }
 
     public String getDeckId() {

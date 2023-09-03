@@ -2,10 +2,12 @@ package com.blackjackgame.logic;
 
 import com.blackjackgame.cards.Card;
 import com.blackjackgame.cards.Deck;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
 
 
 public class BlackjackGameLogic {
@@ -15,16 +17,8 @@ public class BlackjackGameLogic {
     private boolean playerTurn;
 
     public BlackjackGameLogic() {
-        deck = new Deck();
         playerHand = new ArrayList<>();
         dealerHand = new ArrayList<>();
-        playerTurn = true;
-
-        // Initial deal: Player gets two cards, and the dealer gets one card face up and one card face down.
-        playerHand.add(deck.drawCard());
-        playerHand.add(deck.drawCard());
-        dealerHand.add(deck.drawCard());
-        dealerHand.add(deck.drawCard());
     }
 
     public List<Card> getPlayerHand() {
@@ -87,12 +81,12 @@ public class BlackjackGameLogic {
     }
 
     public void startGame() {
-
         // Welcome message
-        System.out.println("Welcome to Blackjack!");
+//        System.out.println("Welcome to Blackjack!");
 
         // Initialize the game state
-        deck.shuffle(); // Shuffle the deck before starting the game
+        deck = new Deck();
+        playerTurn = true;
 
         // Clear the player's and dealer's hands
         playerHand.clear();
@@ -112,8 +106,8 @@ public class BlackjackGameLogic {
         // Show initial hands
         System.out.println("Your hand: " + playerHand);
         System.out.println("Dealer's hand: [**," + dealerHand.get(0) + "]"); // Hide the dealer's facedown card
-
         // Player's turn
+        System.out.println(playerTurn);
         playerTurn();
 
         // Dealer's turn
@@ -130,12 +124,12 @@ public class BlackjackGameLogic {
             startGame(); // Recursive call to start a new game if the player wants to play again
         } else {
             System.out.println("Thank you for playing Blackjack!");
+            exit(1);
         }
     }
 
     private void playerTurn() {
         Scanner scanner = new Scanner(System.in);
-
         while (isPlayerTurn()) {
             System.out.print("Do you want to hit or stand? (h/s): ");
             String decision = scanner.nextLine();
@@ -162,7 +156,7 @@ public class BlackjackGameLogic {
     }
 
     public void endGame() {
-        playerTurn = false;
+        this.playerTurn = false;
 
         int playerScore = getPlayerScore();
         int dealerScore = getDealerScore();
