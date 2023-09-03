@@ -107,7 +107,6 @@ public class BlackjackGameLogic {
         System.out.println("Your hand: " + playerHand);
         System.out.println("Dealer's hand: [**," + dealerHand.get(0) + "]"); // Hide the dealer's facedown card
         // Player's turn
-        System.out.println(playerTurn);
         playerTurn();
 
         // Dealer's turn
