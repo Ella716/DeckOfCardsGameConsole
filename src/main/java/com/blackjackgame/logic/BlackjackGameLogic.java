@@ -12,8 +12,8 @@ import static java.lang.System.exit;
 
 public class BlackjackGameLogic {
     private Deck deck;
-    private final List<Card> playerHand;
-    private final List<Card> dealerHand;
+    private final ArrayList<Card> playerHand;
+    private final ArrayList<Card> dealerHand;
     private boolean playerTurn;
 
     public BlackjackGameLogic() {
