@@ -21,11 +21,11 @@ public class BlackjackGameLogic {
         dealerHand = new ArrayList<>();
     }
 
-    public List<Card> getPlayerHand() {
+    public ArrayList<Card> getPlayerHand() {
         return playerHand;
     }
 
-    public List<Card> getDealerHand() {
+    public ArrayList<Card> getDealerHand() {
         return dealerHand;
     }
 
