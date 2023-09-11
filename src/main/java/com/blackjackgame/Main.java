@@ -6,6 +6,17 @@ import java.util.Scanner;
 
 public class Main {
 
+    private BlackjackGameLogic gameLogic;
+
+    public BlackjackGameLogic getGameLogic() {
+        return gameLogic;
+    }
+
+    public Main() {
+        // Initialize gameLogic here
+        gameLogic = new BlackjackGameLogic();
+    }
+
     public static void main(String[] args) {
         System.out.println("Welcome to Console Blackjack!");
 
@@ -14,8 +25,10 @@ public class Main {
 
         // Start the game
         gameLogic.startGame();
-//
+
         Scanner scanner = new Scanner(System.in);
+        scanner.next(); // Provide some input to the Scanner object
+
         while (true) {
             System.out.println("\nPlayer Hand: " + gameLogic.getPlayerHand());
             System.out.println("Dealer Hand: " + gameLogic.getDealerHand());

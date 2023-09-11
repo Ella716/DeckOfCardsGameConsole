@@ -11,7 +11,7 @@ import static java.lang.System.exit;
 
 
 public class BlackjackGameLogic {
-    private Deck deck;
+    public Deck deck;
     private final ArrayList<Card> playerHand;
     private final ArrayList<Card> dealerHand;
     private boolean playerTurn;
@@ -100,12 +100,14 @@ public class BlackjackGameLogic {
         dealerHand.add(deck.drawCard());
         dealerHand.add(deck.drawCard());
 
-        // Reveal the facedown card of the dealer
-        dealerHand.get(0).setFaceUp(true);
 
         // Show initial hands
         System.out.println("Your hand: " + playerHand);
         System.out.println("Dealer's hand: [**," + dealerHand.get(0) + "]"); // Hide the dealer's facedown card
+
+        // Reveal the facedown card of the dealer
+        dealerHand.get(0).setFaceUp(true);
+
         // Player's turn
         playerTurn();
 
@@ -154,9 +156,8 @@ public class BlackjackGameLogic {
         }
     }
 
-    public void endGame() {
-        this.playerTurn = false;
 
+    public void endGame() {
         int playerScore = getPlayerScore();
         int dealerScore = getDealerScore();
 
@@ -171,5 +172,9 @@ public class BlackjackGameLogic {
         } else {
             System.out.println("Dealer wins!");
         }
+
+        // Print the dealer's hand only once
+        System.out.println("Dealer's hand: " + dealerHand);
     }
+
 }

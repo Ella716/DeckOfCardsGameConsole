@@ -5,7 +5,10 @@ import com.blackjackgame.httpclient.responses.CardResponse;
 import com.blackjackgame.httpclient.responses.ShuffleResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class Deck {
@@ -43,6 +46,11 @@ public class Deck {
 
         return cards.removeFirst();
     }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
 
 
 //    public void shuffle() {

@@ -15,6 +15,10 @@ public class Card {
     public Card(String suit, int rank) {
     }
 
+    public Card(String suit, String hearts) {
+
+    }
+
     public String getValue() {
         return value;
     }
@@ -37,7 +41,7 @@ public class Card {
     }
 
     public boolean isFaceCard() {
-        return value.matches("[JQK]");
+        return value.equals("J") || value.equals("Q") || value.equals("K");
     }
 
     public int getRank() {
@@ -53,4 +57,9 @@ public class Card {
             return 0;
         }
     }
+
+    public boolean isFaceUp() {
+        return faceUp;
+    }
+
 }
